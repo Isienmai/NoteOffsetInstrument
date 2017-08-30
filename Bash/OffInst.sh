@@ -1,53 +1,80 @@
 #!/bin/bash
 
-#scale without sharp or flat notes
-scale=(A0 B0 C1 D1 E1 F1 G1 A1 B1 C2 D2 E2 F2 G2 A2 B2 C3 D3 E3 F3 G3 A3 B3 C4 D4 E4 F4 G4 A4 B4 C5 D5 E5 F5 G5 A5 B5 C6 D6 E6 F6 G6 A6 B6 C7 D7 E7 F7 G7 A7 B7 C8)
-currentNote=23 #c4
+#range is A0 -> C8, incrementing between B and C
+#create new scales and swap in as necessary to include sharp/flat notes, or limit note availability
+
+scale=(C D E F G A B)
+scaleSize=7
+
+key=4
+keyMax=7
+keyMin=1
+
+currentNote=0
+
+#function for checking two specified inputs and incrementing/decrementing the currentNote by a given amount
+#args: 1 = increment input, 2 = decrement input, 3 = increment/decrement value
+function CondIncNote
+{
+	if [ "$input" == "$1" ]
+	then
+		#INCREMENT by the specified value
+		((currentNote+=$3))
+		
+		#If this goes over the upper limit then either undo the change or update the key
+		if (( currentNote >= scaleSize ))
+		then
+			if ((key < keyMax))
+			then 
+				((currentNote = currentNote % scaleSize))
+				((key++))
+			else
+				((currentNote -= $3))
+			fi
+		fi
+	fi
+
+	if [ "$input" == "$2" ]
+	then
+		((currentNote-=$3))
+		
+		if (( currentNote < 0 ))
+		then
+			if ((key > keyMin))
+			then
+				((currentNote += scaleSize))
+				((key--))
+			else
+				((currentNote += $3))
+			fi
+		fi
+	fi
+}
+
+function CheckInput
+{
+	#increment the note by one
+	CondIncNote w s 1	
+
+	#increment the note by two
+	CondIncNote e d 2
+
+	#increment the note by three
+	CondIncNote r f 3
+
+	#increment the note by four
+	CondIncNote t g 4
+
+	#increment the note by five
+	CondIncNote y h 5
+}
 
 while true;
 do
 	read -rsn1 input
 
-	#increment the note by one
-	if [ "$input" == "w" ]; then
-		((currentNote+=1))
-	fi
-	if [ "$input" == "s" ]; then
-		((currentNote-=1))
-	fi
-
-	#increment the note by two
-	if [ "$input" == "e" ]; then
-		((currentNote+=2))
-	fi
-	if [ "$input" == "d" ]; then
-		((currentNote-=2))
-	fi
-
-	#increment the note by three
-	if [ "$input" == "r" ]; then
-		((currentNote+=3))
-	fi
-	if [ "$input" == "f" ]; then
-		((currentNote-=3))
-	fi
-
-	#increment the note by four
-	if [ "$input" == "t" ]; then
-		((currentNote+=4))
-	fi
-	if [ "$input" == "g" ]; then
-		((currentNote-=4))
-	fi
-
-	#increment the note by five
-	if [ "$input" == "y" ]; then
-		((currentNote+=5))
-	fi
-	if [ "$input" == "h" ]; then
-		((currentNote-=5))
-	fi
-
-	echo ${scale[$currentNote]}
-	play -qn synth 2 pluck ${scale[$currentNote]} & 
+	CheckInput
+	
+	echo ${scale[$currentNote]}$key
+	play -qn synth 2 pluck ${scale[$currentNote]}$key & 
 done
