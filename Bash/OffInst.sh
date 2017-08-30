@@ -32,6 +32,22 @@ do
 		((currentNote-=3))
 	fi
 
+	#increment the note by four
+	if [ "$input" == "t" ]; then
+		((currentNote+=4))
+	fi
+	if [ "$input" == "g" ]; then
+		((currentNote-=4))
+	fi
+
+	#increment the note by five
+	if [ "$input" == "y" ]; then
+		((currentNote+=5))
+	fi
+	if [ "$input" == "h" ]; then
+		((currentNote-=5))
+	fi
+
 	echo ${scale[$currentNote]}
 	play -qn synth 2 pluck ${scale[$currentNote]} & 
 done
