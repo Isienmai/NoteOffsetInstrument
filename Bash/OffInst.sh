@@ -3,7 +3,8 @@
 #range is A0 -> C8, incrementing between B and C
 #create new scales and swap in as necessary to include sharp/flat notes, or limit note availability
 
-scale=(C D E F G A B)
+#scale=(C D E F G A B)
+scale=(C Db Eb F G Ab Bb)
 scaleSize=7
 
 key=4
