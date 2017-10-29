@@ -57,4 +57,4 @@ def GetNoteString(noteIndex):
   global scale
   return pluck1(scale.get(noteIndex)).astype(numpy.float32).tostring()
 
-scale = Scale(Note('C', 3), [2, 2, 1, 2, 2, 2, 1])
+scale = Scale(Note('C', 3), [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
